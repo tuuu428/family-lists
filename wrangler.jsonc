@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lists",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  // 画面（public/ の静的ファイル）とAPIを1つのWorkerで配る。/api だけWorkerのコードを通す。
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  // 公開してよい設定。秘密鍵（VAPID_PRIVATE_JWK）はここに書かず `npx wrangler secret put` で入れる。
+  "vars": {
+    // Google Cloud で作る「OAuth クライアント ID」（README 参照）。空のままだと Google ログインは出ない。
+    "GOOGLE_CLIENT_ID": "290521223586-in0ijg9d726or82gesfol9mngtv9v4rp.apps.googleusercontent.com",
+    // 通知の公開鍵（本番用）。対になる秘密鍵は `npx wrangler secret put VAPID_PRIVATE_JWK` で入れてある。
+    "VAPID_PUBLIC_KEY": "BHk1AsQwaDvpc6n5l9FYiC3ck7XT1phdimNEHD7CimurP58ZTAF_dHvBTZariZUzA09phbYZd2ejvISWkDhgXHA"
+  },
+  // 回数制限（bot 対策）。同じ送り元（IP アドレス）からの1分あたりの回数。
+  // 家族の通常の使い方（4秒ごとの読み直し × 数台）では届かず、機械的な連打だけが止まる値にしてある。
+  "ratelimits": [
+    { "name": "RL_AUTH", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
+    { "name": "RL_WRITE", "namespace_id": "1002", "simple": { "limit": 120, "period": 60 } },
+    { "name": "RL_READ", "namespace_id": "1003", "simple": { "limit": 300, "period": 60 } }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "family-lists",
+      // 本番の DB（`npx wrangler d1 create family-lists` で作ったもの）。手元の開発では使われない。
+      "database_id": "40cdd478-afe3-4a99-99fd-fddaf607c7ed",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

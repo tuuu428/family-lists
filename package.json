@@ -1,0 +1,15 @@
+{
+  "name": "family-lists",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:migrate": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "dev:lan": "wrangler dev --ip 0.0.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.151.1"
+  }
+}
