@@ -10,6 +10,6 @@
     "dev:lan": "wrangler dev --ip 0.0.0.0"
   },
   "devDependencies": {
-    "wrangler": "^4.151.1"
+    "wrangler": "^4.156.0"
   }
 }
